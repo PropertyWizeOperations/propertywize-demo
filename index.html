@@ -64,6 +64,21 @@
     });
   }
   // ?sound=off: the muted+autoplay markup attributes already handle it.
+
+  // Autoplay watchdog: headless/bot browsers (e.g. Recall.ai's screenshare
+  // renderer) sometimes leave the video paused even with muted+autoplay.
+  // Keep nudging play() until frames are actually advancing.
+  function kick() {
+    if (v.ended) return;
+    try {
+      if (v.paused && v.readyState >= 2) v.play().catch(function(){});
+    } catch (e) {}
+  }
+  v.addEventListener('canplay', kick);
+  v.addEventListener('pause', function () { setTimeout(kick, 500); });
+  document.addEventListener('visibilitychange', kick);
+  setInterval(kick, 1500);
+  kick();
 })();
 </script>
 </body>
