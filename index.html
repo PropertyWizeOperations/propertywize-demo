@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PropertyWize Demo</title>
+<style>
+  html, body { margin: 0; padding: 0; background: #000; height: 100%; overflow: hidden; }
+  #v { width: 100vw; height: 100vh; object-fit: contain; background: #000; display: block; }
+  #tap {
+    position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+    background: rgba(0,0,0,.72); color: #fff; font: 600 22px/1.4 system-ui, sans-serif;
+    text-align: center; cursor: pointer; z-index: 10; padding: 24px;
+  }
+  #tap[hidden] { display: none; }
+  #tap .card { border: 2px solid #7ab929; border-radius: 14px; padding: 28px 36px; background: #111; }
+</style>
+</head>
+<body>
+<video id="v" playsinline preload="auto">
+  <source src="demo-video-720p.mp4" type="video/mp4">
+</video>
+<div id="tap" hidden>
+  <div class="card">&#128266; Tap anywhere<br>to enable sound</div>
+</div>
+<script>
+(function () {
+  var params = new URLSearchParams(location.search);
+  // ?sound=off  -> muted playback (Stan narrates live over the slides)
+  // default     -> attempt with sound (video narrates itself)
+  var wantSound = params.get('sound') !== 'off';
+  var startAt = parseFloat(params.get('t') || '0');
+  var v = document.getElementById('v');
+  var tap = document.getElementById('tap');
+
+  function showTap() {
+    tap.hidden = false;
+    var unmute = function () {
+      v.muted = false;
+      v.play().catch(function(){});
+      tap.hidden = true;
+      document.body.removeEventListener('click', unmute);
+    };
+    document.body.addEventListener('click', unmute);
+  }
+
+  v.muted = !wantSound;
+  if (startAt > 0) {
+    v.addEventListener('loadedmetadata', function () {
+      if (startAt < v.duration) v.currentTime = startAt;
+    }, { once: true });
+  }
+  v.play().then(function () {
+    // Playing. If we wanted sound but ended up muted, offer tap-to-unmute.
+    if (wantSound && v.muted) showTap();
+  }).catch(function () {
+    // Unmuted autoplay blocked: fall back to muted playback + tap overlay.
+    v.muted = true;
+    v.play().catch(function(){});
+    showTap();
+  });
+})();
+</script>
+</body>
+</html>
