@@ -82,6 +82,10 @@
   setInterval(kick, 1500);
   kick();
 
+  // Keepalive: touch the DOM once a second (invisible) so headless/bot
+  // browsers don't throttle the page into a frozen frame.
+  setInterval(function () { v.dataset.tick = String(Date.now()); }, 1000);
+
   // Debug overlay (?debug=1): live video state readout for diagnosing
   // headless/bot browsers. Shows in the top-left of the shared screen.
   if (params.get('debug') === '1') {
