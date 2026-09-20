@@ -14,6 +14,16 @@
   }
   #tap[hidden] { display: none; }
   #tap .card { border: 2px solid #7ab929; border-radius: 14px; padding: 28px 36px; background: #111; }
+  #slate {
+    position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+    background: #0b0f0a; color: #fff; font-family: system-ui, sans-serif;
+    text-align: center; z-index: 15; padding: 24px;
+  }
+  #slate[hidden] { display: none; }
+  #slate .brand { color: #7ab929; font-weight: 800; letter-spacing: 4px; font-size: 20px; margin-bottom: 18px; }
+  #slate h1 { font-size: 34px; margin: 0 0 12px; font-weight: 700; }
+  #slate p { color: #bdbdbd; font-size: 18px; margin: 6px 0; }
+  #slate #countdown { color: #7ab929; font-size: 22px; font-weight: 700; margin-top: 14px; }
 </style>
 </head>
 <body>
@@ -23,15 +33,45 @@
 <div id="tap" hidden>
   <div class="card">&#128266; Tap anywhere<br>to enable sound</div>
 </div>
+<div id="slate" hidden>
+  <div>
+    <div class="brand">PROPERTYWIZE</div>
+    <h1>Your live demo is about to begin</h1>
+    <p>Stan, our New Business Developer, will be with you shortly.</p>
+    <div id="countdown"></div>
+  </div>
+</div>
 <script>
 (function () {
   var params = new URLSearchParams(location.search);
-  // ?sound=off -> muted playback (Stan narrates live over the slides)
-  // default    -> attempt with sound (video narrates itself)
   var wantSound = params.get('sound') !== 'off';
   var startAt = parseFloat(params.get('t') || '0');
+  var startAtEpoch = parseFloat(params.get('start_at') || '0');
+  var holding = startAtEpoch > 0 && (startAtEpoch * 1000 - Date.now()) > 0;
   var v = document.getElementById('v');
   var tap = document.getElementById('tap');
+  var slate = document.getElementById('slate');
+
+  if (holding) {
+    v.removeAttribute('autoplay');
+    v.pause();
+    slate.hidden = false;
+    var cd = document.getElementById('countdown');
+    var timer = setInterval(function () {
+      var ms = startAtEpoch * 1000 - Date.now();
+      if (ms <= 0) { clearInterval(timer); beginPlayback(); return; }
+      var s = Math.ceil(ms / 1000);
+      cd.textContent = 'Starting in ' + Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+    }, 500);
+  }
+
+  function beginPlayback() {
+    holding = false;
+    slate.hidden = true;
+    try { v.currentTime = 0; } catch (e) {}
+    v.play().catch(function(){});
+    kick();
+  }
 
   function showTap() {
     tap.hidden = false;
@@ -50,10 +90,7 @@
     }, { once: true });
   }
 
-  if (wantSound) {
-    // Muted autoplay is already running via the markup attributes.
-    // Try to bring sound up; without a user gesture the browser blocks
-    // it, so stay muted and offer tap-to-unmute instead.
+  if (wantSound && !holding) {
     v.muted = false;
     v.play().then(function () {
       if (v.muted) showTap();
@@ -63,13 +100,9 @@
       showTap();
     });
   }
-  // ?sound=off: the muted+autoplay markup attributes already handle it.
 
-  // Autoplay watchdog: headless/bot browsers (e.g. Recall.ai's screenshare
-  // renderer) sometimes leave the video paused even with muted+autoplay.
-  // Keep nudging play() until frames are actually advancing.
   function kick() {
-    if (v.ended) return;
+    if (holding || v.ended) return;
     try {
       if (v.paused && v.readyState >= 2) {
         v.play().then(function(){ lastPlay = 'ok'; }, function(e){ lastPlay = 'rej:' + (e && e.name); });
@@ -82,12 +115,8 @@
   setInterval(kick, 1500);
   kick();
 
-  // Keepalive: touch the DOM once a second (invisible) so headless/bot
-  // browsers don't throttle the page into a frozen frame.
   setInterval(function () { v.dataset.tick = String(Date.now()); }, 1000);
 
-  // Debug overlay (?debug=1): live video state readout for diagnosing
-  // headless/bot browsers. Shows in the top-left of the shared screen.
   if (params.get('debug') === '1') {
     var dbg = document.createElement('div');
     var lastPlay = 'n/a';
