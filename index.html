@@ -71,14 +71,39 @@
   function kick() {
     if (v.ended) return;
     try {
-      if (v.paused && v.readyState >= 2) v.play().catch(function(){});
-    } catch (e) {}
+      if (v.paused && v.readyState >= 2) {
+        v.play().then(function(){ lastPlay = 'ok'; }, function(e){ lastPlay = 'rej:' + (e && e.name); });
+      }
+    } catch (e) { lastPlay = 'throw'; }
   }
   v.addEventListener('canplay', kick);
   v.addEventListener('pause', function () { setTimeout(kick, 500); });
   document.addEventListener('visibilitychange', kick);
   setInterval(kick, 1500);
   kick();
+
+  // Debug overlay (?debug=1): live video state readout for diagnosing
+  // headless/bot browsers. Shows in the top-left of the shared screen.
+  if (params.get('debug') === '1') {
+    var dbg = document.createElement('div');
+    var lastPlay = 'n/a';
+    dbg.style.cssText = 'position:fixed;top:8px;left:8px;z-index:20;background:rgba(0,0,0,.85);color:#0f0;font:14px/1.5 monospace;padding:8px 10px;white-space:pre;';
+    document.body.appendChild(dbg);
+    setInterval(function () {
+      var err = v.error ? v.error.code : 'none';
+      var src = v.currentSrc || 'none';
+      dbg.textContent =
+        't=' + v.currentTime.toFixed(1) + 's' +
+        ' paused=' + v.paused +
+        ' muted=' + v.muted +
+        ' readyState=' + v.readyState +
+        ' networkState=' + v.networkState +
+        ' err=' + err +
+        ' lastPlay=' + lastPlay +
+        '\nbuffered=' + (v.buffered.length ? v.buffered.end(v.buffered.length - 1).toFixed(1) + 's' : '0s') +
+        ' src=...' + src.slice(-34);
+    }, 1000);
+  }
 })();
 </script>
 </body>
