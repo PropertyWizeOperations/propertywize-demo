@@ -24,6 +24,16 @@
   #slate h1 { font-size: 34px; margin: 0 0 12px; font-weight: 700; }
   #slate p { color: #bdbdbd; font-size: 18px; margin: 6px 0; }
   #slate #countdown { color: #7ab929; font-size: 22px; font-weight: 700; margin-top: 14px; }
+  #techslate {
+    position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+    background: #0b0f0a; color: #fff; font-family: system-ui, sans-serif;
+    text-align: center; z-index: 30; padding: 24px;
+  }
+  #techslate[hidden] { display: none; }
+  #techslate .brand { color: #7ab929; font-weight: 800; letter-spacing: 4px; font-size: 20px; margin-bottom: 18px; }
+  #techslate h1 { font-size: 34px; margin: 0 0 14px; font-weight: 700; }
+  #techslate p { color: #bdbdbd; font-size: 19px; margin: 8px 0; max-width: 640px; }
+  #techslate .pulse { color: #7ab929; font-size: 15px; font-weight: 700; letter-spacing: 2px; margin-top: 18px; }
 </style>
 </head>
 <body>
@@ -41,18 +51,47 @@
     <div id="countdown"></div>
   </div>
 </div>
+<div id="techslate" hidden>
+  <div>
+    <div class="brand">PROPERTYWIZE</div>
+    <h1>We're having a technical issue</h1>
+    <p>Your host's audio didn't connect, so we've paused the demo rather than play it without sound.</p>
+    <p>Please stay in the room &mdash; we're fixing this now and will call you right back.</p>
+    <div class="pulse">HOLDING YOUR SPOT</div>
+  </div>
+</div>
 <script>
 (function () {
   var params = new URLSearchParams(location.search);
-  var wantSound = params.get('sound') !== 'off';
-  var startAt = parseFloat(params.get('t') || '0');
-  var startAtEpoch = parseFloat(params.get('start_at') || '0');
-  var holding = startAtEpoch > 0 && (startAtEpoch * 1000 - Date.now()) > 0;
   var v = document.getElementById('v');
   var tap = document.getElementById('tap');
   var slate = document.getElementById('slate');
 
+  // ?mode=tech -> technical-difficulty hold state. The trigger swaps the
+  // screenshare to this mode when Stan's dial-in never connects, so a
+  // prospect never sits through a silent video. No video starts here.
+  if (params.get('mode') === 'tech') {
+    v.removeAttribute('autoplay');
+    try { v.pause(); } catch (e) {}
+    v.style.display = 'none';
+    document.getElementById('techslate').hidden = false;
+    // Keepalive so the bot browser doesn't throttle the slate.
+    setInterval(function () { v.dataset.tick = String(Date.now()); }, 1000);
+    return;
+  }
+
+  // ?sound=off -> muted playback (Stan narrates live over the slides)
+  // default    -> attempt with sound (video narrates itself)
+  var wantSound = params.get('sound') !== 'off';
+  var startAt = parseFloat(params.get('t') || '0');
+  // ?start_at=<unix epoch seconds> -> hold on the branded slate until then,
+  // then start the video from 0. Used by the demo trigger so the video and
+  // Stan's narration both anchor to the booking start time.
+  var startAtEpoch = parseFloat(params.get('start_at') || '0');
+  var holding = startAtEpoch > 0 && (startAtEpoch * 1000 - Date.now()) > 0;
+
   if (holding) {
+    // Stop the markup autoplay from starting the video during the hold.
     v.removeAttribute('autoplay');
     v.pause();
     slate.hidden = false;
@@ -91,6 +130,9 @@
   }
 
   if (wantSound && !holding) {
+    // Muted autoplay is already running via the markup attributes.
+    // Try to bring sound up; without a user gesture the browser blocks
+    // it, so stay muted and offer tap-to-unmute instead.
     v.muted = false;
     v.play().then(function () {
       if (v.muted) showTap();
@@ -100,7 +142,11 @@
       showTap();
     });
   }
+  // ?sound=off: the muted+autoplay markup attributes already handle it.
 
+  // Autoplay watchdog: headless/bot browsers (e.g. Recall.ai's screenshare
+  // renderer) sometimes leave the video paused even with muted+autoplay.
+  // Keep nudging play() until frames are actually advancing.
   function kick() {
     if (holding || v.ended) return;
     try {
@@ -115,8 +161,12 @@
   setInterval(kick, 1500);
   kick();
 
+  // Keepalive: touch the DOM once a second (invisible) so headless/bot
+  // browsers don't throttle the page into a frozen frame.
   setInterval(function () { v.dataset.tick = String(Date.now()); }, 1000);
 
+  // Debug overlay (?debug=1): live video state readout for diagnosing
+  // headless/bot browsers. Shows in the top-left of the shared screen.
   if (params.get('debug') === '1') {
     var dbg = document.createElement('div');
     var lastPlay = 'n/a';
@@ -131,8 +181,6 @@
         ' muted=' + v.muted +
         ' readyState=' + v.readyState +
         ' networkState=' + v.networkState +
-        ' err=' + err +
-        ' lastPlay=' + lastPlay +
         '\nbuffered=' + (v.buffered.length ? v.buffered.end(v.buffered.length - 1).toFixed(1) + 's' : '0s') +
         ' src=...' + src.slice(-34);
     }, 1000);
