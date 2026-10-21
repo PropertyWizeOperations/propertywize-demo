@@ -4,45 +4,51 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PropertyWize Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <style>
   html, body { margin: 0; padding: 0; background: #000; height: 100%; overflow: hidden; }
   #v { width: 100vw; height: 100vh; object-fit: contain; background: #000; display: block; }
   #tap {
     position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
-    background: rgba(0,0,0,.72); color: #fff; font: 600 22px/1.4 system-ui, sans-serif;
+    background: rgba(246,246,246,.94); color: #003e7e; font: 600 22px/1.4 'Roboto', system-ui, sans-serif;
     text-align: center; cursor: pointer; z-index: 10; padding: 24px;
   }
   #tap[hidden] { display: none; }
-  #tap .card { border: 2px solid #7ab929; border-radius: 14px; padding: 28px 36px; background: #111; }
+  #tap .card { border: 2px solid #003e7e; border-radius: 0; padding: 28px 36px; background: #fff; }
   #helpbar {
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 5;
-    background: rgba(0,0,0,.78); color: #eee; font: 500 14px/1.4 system-ui, sans-serif;
+    background: #003e7e; color: #fff; font: 500 14px/1.4 'Roboto', system-ui, sans-serif;
     text-align: center; padding: 8px 12px;
   }
   #helpbar[hidden] { display: none; }
-  #helpbar b { color: #7ab929; }
-  #slate .soundcheck { color: #fff; font-size: 19px; margin-top: 16px; }
-  #slate .soundhelp { color: #bdbdbd; font-size: 17px; max-width: 620px; }
+  #helpbar b { color: #fff; text-decoration: underline; }
+  #slate .soundcheck { color: #003e7e; font-weight: 700; font-size: 19px; margin-top: 16px; }
+  #slate .soundhelp { color: #555; font-size: 17px; max-width: 620px; margin-left: auto; margin-right: auto; }
   #slate {
     position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
-    background: #0b0f0a; color: #fff; font-family: system-ui, sans-serif;
+    background: #fff; color: #1a1a1a; font-family: 'Roboto', system-ui, sans-serif;
     text-align: center; z-index: 15; padding: 24px;
   }
   #slate[hidden] { display: none; }
-  #slate .brand { color: #7ab929; font-weight: 800; letter-spacing: 4px; font-size: 20px; margin-bottom: 18px; }
-  #slate h1 { font-size: 34px; margin: 0 0 12px; font-weight: 700; }
-  #slate p { color: #bdbdbd; font-size: 18px; margin: 6px 0; }
-  #slate #countdown { color: #7ab929; font-size: 22px; font-weight: 700; margin-top: 14px; }
+  #slate .logo { width: 300px; max-width: 70vw; height: auto; }
+  #slate .accentbar { width: 64px; height: 4px; background: #6db33f; margin: 16px auto 22px; }
+  #slate h1 { color: #003e7e; font-size: 34px; margin: 0 0 12px; font-weight: 700; }
+  #slate p { color: #444; font-size: 18px; margin: 6px 0; }
+  #slate #countdown { color: #003e7e; font-size: 30px; font-weight: 700; margin-top: 16px; }
+  #slate .site { color: #003e7e; font-weight: 700; letter-spacing: 2px; font-size: 17px; margin-top: 24px; }
   #techslate {
     position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
-    background: #0b0f0a; color: #fff; font-family: system-ui, sans-serif;
+    background: #fff; color: #1a1a1a; font-family: 'Roboto', system-ui, sans-serif;
     text-align: center; z-index: 30; padding: 24px;
   }
   #techslate[hidden] { display: none; }
-  #techslate .brand { color: #7ab929; font-weight: 800; letter-spacing: 4px; font-size: 20px; margin-bottom: 18px; }
-  #techslate h1 { font-size: 34px; margin: 0 0 14px; font-weight: 700; }
-  #techslate p { color: #bdbdbd; font-size: 19px; margin: 8px 0; max-width: 640px; }
-  #techslate .pulse { color: #7ab929; font-size: 15px; font-weight: 700; letter-spacing: 2px; margin-top: 18px; }
+  #techslate .logo { width: 300px; max-width: 70vw; height: auto; }
+  #techslate .accentbar { width: 64px; height: 4px; background: #6db33f; margin: 16px auto 22px; }
+  #techslate h1 { color: #003e7e; font-size: 34px; margin: 0 0 14px; font-weight: 700; }
+  #techslate p { color: #444; font-size: 19px; margin: 8px 0; max-width: 640px; }
+  #techslate .pulse { color: #003e7e; font-size: 15px; font-weight: 700; letter-spacing: 2px; margin-top: 18px; }
+  #techslate .site { color: #003e7e; font-weight: 700; letter-spacing: 2px; font-size: 17px; margin-top: 24px; }
 </style>
 </head>
 <body>
@@ -52,24 +58,28 @@
 <div id="tap" hidden>
   <div class="card">&#128266; Tap anywhere<br>to enable sound</div>
 </div>
-<div id="helpbar" hidden>Can&rsquo;t hear Stan? Turn your volume up and unmute the speaker icon. Still stuck? Text <b>HELP</b> to <b>(410) 372-6512</b> and a live person will call you.</div>
+<div id="helpbar" hidden>Can&rsquo;t hear the presentation? Turn your volume up and unmute the speaker icon. Still stuck? Text <b>HELP</b> to <b>(410) 372-6512</b> and a live person will call you.</div>
 <div id="slate" hidden>
   <div>
-    <div class="brand">PROPERTYWIZE</div>
+    <img class="logo" src="https://propertywize.com/images/logo.png" alt="PropertyWize">
+    <div class="accentbar"></div>
     <h1>Your live demo is about to begin</h1>
     <p>Stan, our New Business Developer, will be with you shortly.</p>
-    <p class="soundcheck">&#128266; Sound check: turn your volume UP now. Stan speaks to you through the meeting audio.</p>
-    <p class="soundhelp">If you cannot hear him at any point, raise your hand and text HELP to (410) 372-6512. A live person will call you right back.</p>
+    <p class="soundcheck">&#128266; Sound check: turn your volume UP now. The presentation has its own narrator, and Stan will host you through it live.</p>
+    <p class="soundhelp">If you cannot hear the narration at any point, raise your hand and text HELP to (410) 372-6512. A live person will call you right back.</p>
     <div id="countdown"></div>
+    <div class="site">PropertyWize.com</div>
   </div>
 </div>
 <div id="techslate" hidden>
   <div>
-    <div class="brand">PROPERTYWIZE</div>
+    <img class="logo" src="https://propertywize.com/images/logo.png" alt="PropertyWize">
+    <div class="accentbar"></div>
     <h1>We're having a technical issue</h1>
     <p>Your host's audio didn't connect, so we've paused the demo rather than play it without sound.</p>
     <p>Please stay in the room &mdash; we're fixing this now and will call you right back.</p>
     <div class="pulse">HOLDING YOUR SPOT</div>
+    <div class="site">PropertyWize.com</div>
   </div>
 </div>
 <script>
@@ -93,13 +103,13 @@
     return;
   }
 
-  // ?sound=off -> muted playback (Stan narrates live over the slides)
-  // default    -> attempt with sound (video narrates itself)
+  // ?sound=off -> muted playback (manual override)
+  // default    -> attempt with sound (the video narrates itself; Stan hosts)
   var wantSound = params.get('sound') !== 'off';
   var startAt = parseFloat(params.get('t') || '0');
   // ?start_at=<unix epoch seconds> -> hold on the branded slate until then,
   // then start the video from 0. Used by the demo trigger so the video and
-  // Stan's narration both anchor to the booking start time.
+  // Stan's hosting both anchor to the booking start time.
   var startAtEpoch = parseFloat(params.get('start_at') || '0');
   var holding = startAtEpoch > 0 && (startAtEpoch * 1000 - Date.now()) > 0;
 
@@ -185,7 +195,7 @@
   if (params.get('debug') === '1') {
     var dbg = document.createElement('div');
     var lastPlay = 'n/a';
-    dbg.style.cssText = 'position:fixed;top:8px;left:8px;z-index:20;background:rgba(0,0,0,.85);color:#0f0;font:14px/1.5 monospace;padding:8px 10px;white-space:pre;';
+    dbg.style.cssText = 'position:fixed;top:8px;left:8px;z-index:20;background:rgba(0,62,126,.88);color:#fff;font:14px/1.5 monospace;padding:8px 10px;white-space:pre;';
     document.body.appendChild(dbg);
     setInterval(function () {
       var err = v.error ? v.error.code : 'none';
