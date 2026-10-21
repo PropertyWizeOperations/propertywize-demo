@@ -14,6 +14,15 @@
   }
   #tap[hidden] { display: none; }
   #tap .card { border: 2px solid #7ab929; border-radius: 14px; padding: 28px 36px; background: #111; }
+  #helpbar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 5;
+    background: rgba(0,0,0,.78); color: #eee; font: 500 14px/1.4 system-ui, sans-serif;
+    text-align: center; padding: 8px 12px;
+  }
+  #helpbar[hidden] { display: none; }
+  #helpbar b { color: #7ab929; }
+  #slate .soundcheck { color: #fff; font-size: 19px; margin-top: 16px; }
+  #slate .soundhelp { color: #bdbdbd; font-size: 17px; max-width: 620px; }
   #slate {
     position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
     background: #0b0f0a; color: #fff; font-family: system-ui, sans-serif;
@@ -43,11 +52,14 @@
 <div id="tap" hidden>
   <div class="card">&#128266; Tap anywhere<br>to enable sound</div>
 </div>
+<div id="helpbar" hidden>Can&rsquo;t hear Stan? Turn your volume up and unmute the speaker icon. Still stuck? Text <b>HELP</b> to <b>(410) 372-6512</b> and a live person will call you.</div>
 <div id="slate" hidden>
   <div>
     <div class="brand">PROPERTYWIZE</div>
     <h1>Your live demo is about to begin</h1>
     <p>Stan, our New Business Developer, will be with you shortly.</p>
+    <p class="soundcheck">&#128266; Sound check: turn your volume UP now. Stan speaks to you through the meeting audio.</p>
+    <p class="soundhelp">If you cannot hear him at any point, raise your hand and text HELP to (410) 372-6512. A live person will call you right back.</p>
     <div id="countdown"></div>
   </div>
 </div>
@@ -66,6 +78,7 @@
   var v = document.getElementById('v');
   var tap = document.getElementById('tap');
   var slate = document.getElementById('slate');
+  var helpbar = document.getElementById('helpbar');
 
   // ?mode=tech -> technical-difficulty hold state. The trigger swaps the
   // screenshare to this mode when Stan's dial-in never connects, so a
@@ -107,6 +120,7 @@
   function beginPlayback() {
     holding = false;
     slate.hidden = true;
+    helpbar.hidden = false;
     try { v.currentTime = 0; } catch (e) {}
     v.play().catch(function(){});
     kick();
@@ -149,6 +163,7 @@
   // Keep nudging play() until frames are actually advancing.
   function kick() {
     if (holding || v.ended) return;
+    if (!v.paused) helpbar.hidden = false;
     try {
       if (v.paused && v.readyState >= 2) {
         v.play().then(function(){ lastPlay = 'ok'; }, function(e){ lastPlay = 'rej:' + (e && e.name); });
@@ -181,6 +196,8 @@
         ' muted=' + v.muted +
         ' readyState=' + v.readyState +
         ' networkState=' + v.networkState +
+        ' err=' + err +
+        ' lastPlay=' + lastPlay +
         '\nbuffered=' + (v.buffered.length ? v.buffered.end(v.buffered.length - 1).toFixed(1) + 's' : '0s') +
         ' src=...' + src.slice(-34);
     }, 1000);
