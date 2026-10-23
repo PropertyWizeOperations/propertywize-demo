@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your PropertyWize Demo - Prepared for Jordan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #f3f3f3; }
+  body { font-family: 'Roboto', system-ui, sans-serif; font-weight: 300; font-size: 16px; line-height: 1.7; color: #000; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 16px 40px; }
+  header { background: #fff; text-align: center; padding: 28px 16px 8px; }
+  header img.logo { width: 280px; max-width: 72vw; height: auto; }
+  .accentbar { width: 64px; height: 4px; background: #6db33f; margin: 14px auto 18px; }
+  header h1 { color: #003e7e; font-size: 28px; font-weight: 700; margin: 0 0 4px; }
+  header p { color: #444; margin: 4px 0 12px; font-size: 17px; }
+  .card { background: #fff; margin: 18px 0; padding: 22px 22px 18px; border-top: 3px solid #003e7e; }
+  .card h2 { color: #003e7e; font-size: 21px; font-weight: 700; margin: 0 0 6px; text-transform: uppercase; letter-spacing: .4px; }
+  .card h2 .kicker { display: block; font-size: 12px; font-weight: 700; letter-spacing: 2px; color: #6db33f; margin-bottom: 4px; }
+  .card p { margin: 8px 0; }
+  video { width: 100%; height: auto; display: block; background: #000; }
+  .videonote { background: #003e7e; color: #fff; text-align: center; padding: 10px 12px; font-weight: 500; font-size: 15px; }
+  .chips { margin: 10px 0 2px; }
+  .chip { display: inline-block; background: #f6f6f6; border: 1px solid #003e7e; color: #003e7e; font-weight: 500; padding: 3px 12px; margin: 0 6px 8px 0; font-size: 15px; }
+  .pain { font-size: 17px; }
+  .story p { margin: 10px 0; }
+  .story b { color: #003e7e; }
+  .howgrid { display: block; }
+  .how { background: #f6f6f6; padding: 12px 16px; margin: 10px 0; }
+  .how b { color: #003e7e; display: block; font-size: 16px; }
+  .plan { border: 2px solid #003e7e; padding: 16px 18px; margin: 14px 0; }
+  .plan.premium { background: #f6f9f4; border-color: #6db33f; }
+  .plan .tag { display: inline-block; background: #6db33f; color: #fff; font-weight: 700; font-size: 12px; letter-spacing: 2px; padding: 2px 10px; margin-bottom: 8px; }
+  .plan h3 { margin: 0 0 4px; color: #003e7e; font-size: 20px; font-weight: 700; }
+  .plan .price { font-size: 24px; font-weight: 700; color: #003e7e; }
+  .plan .price small { font-size: 15px; font-weight: 400; color: #444; }
+  .plan ul { margin: 8px 0 4px; padding-left: 20px; }
+  .plan.standard { border-color: #999; }
+  .plan.standard h3, .plan.standard .price { color: #333; }
+  .plan.highlight { outline: 4px solid #6db33f; outline-offset: 2px; }
+  ol.steps { padding-left: 20px; margin: 8px 0; }
+  ol.steps li { margin: 6px 0; }
+  .cta { text-align: center; }
+  .btn { display: inline-block; background: #003e7e; color: #fff; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; text-decoration: none; padding: 14px 30px; font-size: 17px; margin: 10px 0; }
+  .btn:hover { background: #fff; color: #003e7e; box-shadow: inset 0 0 0 2px #003e7e; }
+  .fineprint { font-size: 14px; color: #555; text-align: center; margin-top: 10px; }
+  footer { text-align: center; color: #666; font-size: 14px; padding: 18px 0 6px; }
+</style>
+</head>
+<body>
+<header>
+  <img class="logo" src="https://propertywize.com/images/logo.png" alt="PropertyWize">
+  <div class="accentbar"></div>
+  <h1>Your PropertyWize Demo</h1>
+  <p>Prepared for Jordan &middot; 4507 Springwood Ave, Baltimore, MD</p>
+</header>
+<div class="wrap">
+
+  <!-- THE VIDEO -->
+  <div class="card" style="padding:0; overflow:hidden;">
+    <video id="v" controls playsinline preload="metadata" poster="">
+      <source src="https://propertywizeoperations.github.io/propertywize-demo/demo-video-720p.mp4" type="video/mp4">
+    </video>
+    <div class="videonote">Press play - this is our story and how we work. Stan will be right here when it ends.</div>
+  </div>
+
+  <!-- PANEL 1: THEIR PROPERTY -->
+  <div class="card" id="panel1">
+    <h2><span class="kicker">Panel 1</span>Your Property</h2>
+    <p><b>4507 Springwood Ave, Baltimore, MD</b> - single home, currently vacant.</p>
+    <div class="chips">
+      <span class="chip">Listed at $1,850/mo</span>
+      <span class="chip">45 days on the market</span>
+      <span class="chip">Vacant</span>
+    </div>
+    <p class="pain">You have been self-managing from out of town - and fielding unverified applicants - for a home that has sat 45 days. That is a long time to carry a vacant property. This page and this demo are built around fixing exactly that.</p>
+  </div>
+
+  <!-- PANEL 2: THE STORY -->
+  <div class="card story" id="panel2">
+    <h2><span class="kicker">Panel 2</span>The Card That Started All Of This</h2>
+    <p><b>2014.</b> Shanicka Sudler was working corporate America and finishing her MBA when she put <b>$250</b> of her own money into starting what became PropertyWize.</p>
+    <p><b>The lightbulb.</b> Her in-laws were renters, and their property manager - Michelle Yang - handed her a plain business card that just said <i>property manager</i>. No Realtor title, no brokerage. That card proved you could build a real management company without going the Realtor and brokerage route - and she went and built it.</p>
+    <p><b>Today.</b> The PropertyWize team has managed <b>over 500 doors over 10 years</b>, with smart technology doing the routine work and real people watching every detail - a hybrid of tech and high-touch that owners can actually reach.</p>
+  </div>
+
+  <!-- PANEL 3: HOW WE WORK + THE PLANS -->
+  <div class="card" id="panel3">
+    <h2><span class="kicker">Panel 3</span>How We Work + The Two Plans</h2>
+    <div class="howgrid">
+      <div class="how"><b>Placement &amp; screening</b>Professional photos and listing on Zillow, Craigslist, Facebook and GoSection8, then showings and full screening on every applicant.</div>
+      <div class="how"><b>Maintenance, with you in control</b>Any single repair over $300 needs your approval before we spend it. Your money, your call.</div>
+      <div class="how"><b>Owner portal &amp; accounting</b>Rent, documents, inspections and statements in your owner portal - everything documented, nothing by word of mouth.</div>
+    </div>
+
+    <div class="plan premium" id="plan-premium">
+      <span class="tag">RECOMMENDED</span>
+      <h3>Premium</h3>
+      <div class="price">12% <small>of rent - $222/mo on a $1,850 rent basis</small></div>
+      <ul>
+        <li>Everything in Standard, plus landlord protection coverage through the Owner Benefit Package: if a tenant stops paying, the coverage responds for up to two months of rent.</li>
+        <li>Why we recommend it in Maryland: security deposit law is strict, and the OWNER carries the legal risk for deposit accounting. Premium moves that tenant risk off you.</li>
+        <li>No management fee while the home sits vacant for the first 90 days.</li>
+      </ul>
+    </div>
+
+    <div class="plan standard" id="plan-standard">
+      <h3>Standard</h3>
+      <div class="price">10% <small>of rent - $185/mo on a $1,850 rent basis</small></div>
+      <ul>
+        <li>The basic plan: full management, same team, same portal - management only, no protection coverage. You carry the tenant risk yourself.</li>
+      </ul>
+    </div>
+
+    <p><b>Both plans:</b> a $500 contingency reserve - your money, held in your owner account for approved property expenses, refundable when the agreement ends. Onboarding is $300, and because your home is vacant, <b>your onboarding fee is waived - $0</b>. The agreement runs a one-year term; after that year, either of us can end it with 30 days' written notice.</p>
+  </div>
+
+  <!-- PANEL 4: THEIR PROPERTY'S PLAN -->
+  <div class="card" id="panel4">
+    <h2><span class="kicker">Panel 4</span>Your Property's Plan</h2>
+    <p>Here is what happens with 4507 Springwood Ave, in order:</p>
+    <ol class="steps">
+      <li>Full walkthrough of the home, documented.</li>
+      <li>Lockbox installed and professional photos taken.</li>
+      <li>Listing goes live on Zillow, Craigslist, Facebook and GoSection8 - typically within 48 to 72 hours of the walkthrough.</li>
+      <li>Showings and full screening on every applicant, all documented in your owner portal.</li>
+      <li>Lease signed, tenant placed, and management runs from there - rent collection, maintenance, accounting.</li>
+    </ol>
+    <p>The plan is the promise: a vacant home carried 45 days starts moving the week onboarding begins.</p>
+  </div>
+
+  <!-- PANEL 5: THE CLOSE -->
+  <div class="card cta" id="panel5">
+    <h2><span class="kicker">Panel 5</span>Ready When You Are</h2>
+    <p>Tap below, pick your plan, and fill in the Fast Track form - about two minutes on your phone. That form is what puts 4507 Springwood Ave into our onboarding queue this week.</p>
+    <a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLScAs6yFxg14BmVkQxGMjF8wSaGoAHfQqSvCqffs8mWH-aHuKw/viewform" target="_blank" rel="noopener">Start Fast Track</a>
+    <p>After this call you will also get a written recap of everything we covered, with your plan highlighted, plus this same link by text and email.</p>
+    <p class="fineprint">Questions any time: call or text (410) 372-6512.</p>
+  </div>
+
+  <footer>PropertyWize - Property Management, Baltimore | Charlotte<br>PropertyWize.com</footer>
+</div>
+<script>
+  // Recap highlight: ?plan=premium (or standard) outlines the chosen plan card.
+  (function () {
+    var plan = new URLSearchParams(location.search).get('plan');
+    if (plan === 'premium' || plan === 'standard') {
+      var el = document.getElementById('plan-' + plan);
+      if (el) el.classList.add('highlight');
+    }
+  })();
+</script>
+</body>
+</html>
